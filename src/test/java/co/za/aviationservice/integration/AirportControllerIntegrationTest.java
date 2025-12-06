@@ -1,10 +1,9 @@
 package co.za.aviationservice.integration;
 
-import co.za.aviationservice.model.AirportResponse;
+import co.za.aviationservice.model.AirportInformation;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -64,9 +63,9 @@ class AirportControllerIntegrationTest {
                 .addHeader("Content-Type", "application/json"));
 
         // When
-        ResponseEntity<AirportResponse> response = restTemplate.getForEntity(
+        ResponseEntity<AirportInformation> response = restTemplate.getForEntity(
                 "/api/v1/airports/" + icaoCode,
-                AirportResponse.class);
+                AirportInformation.class);
 
         // Then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);

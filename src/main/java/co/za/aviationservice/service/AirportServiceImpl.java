@@ -2,6 +2,7 @@ package co.za.aviationservice.service;
 
 
 import co.za.aviationservice.client.AviationApiClient;
+import co.za.aviationservice.model.AirportInformation;
 import co.za.aviationservice.model.AirportResponse;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
@@ -29,13 +30,13 @@ public class AirportServiceImpl implements AirportService {
     /**
      * Fallback method when circuit breaker is open or retries exhausted
      */
-    private AirportResponse getAirportFallback(String icaoCode, Exception ex) {
+    private AirportInformation getAirportFallback(String icaoCode, Exception ex) {
         log.error("Fallback triggered for ICAO: {}. Error: {}", icaoCode, ex.getMessage());
 
         // Return cached data or default response
-        return AirportResponse.builder()
-                .icao(icaoCode)
-                .name("Service temporarily unavailable")
+        return AirportInformation.builder()
+                .icaoIdent(icaoCode)
+                .facilityName("Service temporarily unavailable")
                 .build();
     }
 }

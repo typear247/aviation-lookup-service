@@ -1,7 +1,6 @@
 # aviation-service
-A production-ready Spring Boot microservice for retrieving airport information using ICAO codes from the Aviation API.
-
-## Quick start
+Spring Boot microservice for retrieving aviation information from the Aviation API.
+(**Mainly** : retrieving airport information using ICAO codes from the Aviation API. as per assessment request)
 
 ### Requirements
 - Java 17
@@ -14,7 +13,9 @@ A production-ready Spring Boot microservice for retrieving airport information u
 ## Architecture Overview
 ![img.png](docs/arch%20overview.png)
 
-
+## AviationAPI documentation
+- Airports : https://docs.aviationapi.com/#tag/airports
+- Example: https://api.aviationapi.com/v1/airports?apt=KATL
 
 ## Architecture Decisions
 

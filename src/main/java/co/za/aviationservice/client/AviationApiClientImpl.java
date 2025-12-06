@@ -1,8 +1,10 @@
 package co.za.aviationservice.client;
 
 
+
 import co.za.aviationservice.exception.AirportNotFoundException;
 import co.za.aviationservice.exception.ExternalApiException;
+import co.za.aviationservice.model.AirportInformation;
 import co.za.aviationservice.model.AirportResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,11 +32,10 @@ public class AviationApiClientImpl implements AviationApiClient {
         try {
             log.debug("Calling aviation API for ICAO: {}", icaoCode);
 
+            // Call external API
             return webClient.get()
                     .uri(uriBuilder -> uriBuilder
-                            .scheme("https")
-                            .host("www.aviationapi.com")
-                            .path("/airport-info")
+                            .path("/v1/airports")
                             .queryParam("apt", icaoCode)
                             .build())
                     .retrieve()
@@ -58,5 +59,4 @@ public class AviationApiClientImpl implements AviationApiClient {
             throw new ExternalApiException("Failed to fetch airport data", ex);
         }
     }
-
 }
