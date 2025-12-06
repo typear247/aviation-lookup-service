@@ -8,7 +8,10 @@ Spring Boot microservice for retrieving aviation information from the Aviation A
 - Docker (optional to containerize)
 - JMeter (optional for load testing)
 
-
+### Additional features (important)
+- OpenAPI swagger
+- Logback (managing logs)
+- logging api timer to see perfomance
 
 ## Architecture Overview
 ![img.png](docs/arch%20overview.png)
@@ -48,6 +51,9 @@ Spring Boot microservice for retrieving aviation information from the Aviation A
 - **Input validation**: ICAO code format validation
 - **Non-root container**: Docker runs as unprivileged user
 - **Error sanitization**: No sensitive data in error responses
+
+
+
 
 1. **Clone the repository**
 ```bash

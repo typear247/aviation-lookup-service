@@ -96,9 +96,10 @@ public class AirportController {
             )
             String icaoCode
     ) {
+        final long startTime = System.currentTimeMillis();
         log.info("Received request for airport with ICAO code: {}", icaoCode);
         AirportResponse response = airportService.getAirportByIcao(icaoCode);
-        log.info("Successfully retrieved airport details for: {}", icaoCode);
+        log.info("Successfully retrieved airport details for : {} in {}ms", icaoCode, System.currentTimeMillis() - startTime);
 
         return ResponseEntity.ok(response);
     }
