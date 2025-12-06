@@ -1,6 +1,7 @@
 package co.za.aviationservice.integration;
 
 import co.za.aviationservice.model.AirportInformation;
+import co.za.aviationservice.model.AirportResponse;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.AfterEach;
@@ -44,18 +45,14 @@ class AirportControllerIntegrationTest {
         String icaoCode = "KJFK";
         String mockResponse = """
                 {
-                    "icaoCode": "KJFK",
-                    "iataCode": "JFK",
-                    "name": "John F Kennedy International Airport",
-                    "city": "New York",
-                    "country": "United States",
-                    "location": {
-                        "latitude": 40.6398,
-                        "longitude": -73.7789
-                    },
-                    "elevation": 13,
-                    "timezone": "America/New_York"
-                }
+                   "KJFK": [
+                     {
+                       "facility_name": "JOHN F KENNEDY INTL",
+                       "faa_ident": "JFK",
+                       "icao_ident": "KJFK"
+                     }
+                   ]
+                 }
                 """;
 
         mockWebServer.enqueue(new MockResponse()
@@ -63,16 +60,19 @@ class AirportControllerIntegrationTest {
                 .addHeader("Content-Type", "application/json"));
 
         // When
-        ResponseEntity<AirportInformation> response = restTemplate.getForEntity(
+        ResponseEntity<AirportResponse> response = restTemplate.getForEntity(
                 "/api/v1/airports/" + icaoCode,
-                AirportInformation.class);
+                AirportResponse.class);
 
         // Then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().getIcaoCode()).isEqualTo("KJFK");
-        assertThat(response.getBody().getName())
-                .isEqualTo("John F Kennedy International Airport");
+
+        // Get the first airport object
+        AirportInformation airport = response.getBody().get(icaoCode).get(0);
+
+        assertThat(airport.getIcaoIdent()).isEqualTo("KJFK");
+        assertThat(airport.getFacilityName()).isEqualTo("JOHN F KENNEDY INTL");
     }
 
     @Test
