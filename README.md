@@ -14,7 +14,7 @@ Spring Boot microservice for retrieving aviation information from the Aviation A
 - logging api timer to see perfomance
 
 ## Architecture Overview
-![img.png](docs/arch%20overview.png)
+![img.png](docs/archy_overview.png)
 
 ## AviationAPI documentation
 - Airports : https://docs.aviationapi.com/#tag/airports

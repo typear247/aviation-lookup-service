@@ -33,7 +33,7 @@ public class AviationApiClientImpl implements AviationApiClient {
             log.debug("Calling aviation API for ICAO: {}", icaoCode);
 
             // Call external API
-            return webClient.get()
+            AirportResponse airportResponse = webClient.get()
                     .uri(uriBuilder -> uriBuilder
                             .path("/v1/airports")
                             .queryParam("apt", icaoCode)
@@ -45,7 +45,14 @@ public class AviationApiClientImpl implements AviationApiClient {
                     .timeout(Duration.ofMillis(timeout))
                     .block();
 
-        } catch (WebClientResponseException.NotFound ex) {
+            //Todo: since API is currently returning empty 200 response for invalid/unknown ICAO, will add an extra check:
+            if (airportResponse.isEmpty() || airportResponse.get(icaoCode).isEmpty()) {
+                throw new AirportNotFoundException(icaoCode);
+            }
+
+            return airportResponse;
+
+        } catch (AirportNotFoundException ex) {
             log.warn("Airport not found for ICAO: {}", icaoCode);
             throw new AirportNotFoundException(icaoCode);
 
