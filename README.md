@@ -2,16 +2,24 @@
 Spring Boot microservice for retrieving aviation information from the Aviation API.
 (**Mainly** : retrieving airport information using ICAO codes from the Aviation API. as per assessment request)
 
-### Requirements
-- Java 17
-- Gradle wrapper (included)
-- Docker (optional to containerize)
-- JMeter (optional for load testing)
+### Key focus areas
+✔ Scalability (layered design [], statelessness, load-ready) \
+✔ Resilience (retry, circuit breaker, fallback)\
+✔ Extensibility (loose provider coupling + interface)\
+✔ Observability (logging, metrics, error transparency)
 
-### Additional features (important)
-- OpenAPI swagger
-- Logback (managing logs)
-- logging api timer to see perfomance
+
+### Technology Stack:
+✔Java 17 \
+✔Spring Boot (for REST API) \
+✔Gradle (build tool) \
+✔OpenAPI/Swagger (API documentation) \
+✔JMeter (.jmx) for load testing \
+✔Docker (containerization) \
+✔Resilience libraries: Resilience4j (circuit breakers, retries) \
+✔Logging: SLF4J + Logback (logging api timer to see performance) \
+✔Metrics: Micrometer + Prometheus (optional)
+
 
 ## Architecture Overview
 ![img.png](docs/archy_overview.png)
@@ -42,16 +50,21 @@ Spring Boot microservice for retrieving aviation information from the Aviation A
 - **Graceful shutdown**: 30s drain period for in-flight requests
 
 ### 4. **Observability**
-- **Structured logging**: SLF4J with contextual information
+- **Structured logging**: SLF4J + logback.xml with contextual information
 - **Metrics**: Prometheus-compatible metrics via Actuator
 - **Health checks**: Liveness/readiness probes
-- **Distributed tracing ready**: Can integrate Zipkin/Jaeger
 
 ### 5. **Security**
 - **Input validation**: ICAO code format validation
 - **Non-root container**: Docker runs as unprivileged user
 - **Error sanitization**: No sensitive data in error responses
 
+
+
+## Unit/Integration test
+![img.png](img.png)
+
+## Performance test (using JMeter)
 
 
 

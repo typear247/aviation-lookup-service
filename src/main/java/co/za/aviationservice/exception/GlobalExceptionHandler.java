@@ -1,8 +1,6 @@
-package co.za.aviationservice.controller;
+package co.za.aviationservice.exception;
 
 
-import co.za.aviationservice.exception.AirportNotFoundException;
-import co.za.aviationservice.exception.ExternalApiException;
 import co.za.aviationservice.model.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

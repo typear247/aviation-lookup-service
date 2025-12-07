@@ -1,6 +1,6 @@
 package co.za.aviationservice.service;
 
-import co.za.aviationservice.client.AviationApiClientImpl;
+import co.za.aviationservice.client.aviationapi.AviationApiProvider;
 import co.za.aviationservice.exception.AirportNotFoundException;
 import co.za.aviationservice.exception.ExternalApiException;
 import co.za.aviationservice.model.AirportResponse;
@@ -9,7 +9,6 @@ import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -22,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class AirportServiceTest {
     private MockWebServer mockWebServer;
 
-    private AviationApiClientImpl client;
+    private AviationApiProvider client;
 
     @BeforeEach
     void setup() throws IOException {
@@ -33,7 +32,7 @@ class AirportServiceTest {
                 .baseUrl(mockWebServer.url("/").toString())
                 .build();
 
-        client = new AviationApiClientImpl(testWebClient);
+        client = new AviationApiProvider(testWebClient);
 
         // Set timeout for test
         ReflectionTestUtils.setField(client, "timeout", 5000L);

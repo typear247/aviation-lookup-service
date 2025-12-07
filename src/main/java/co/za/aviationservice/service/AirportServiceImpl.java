@@ -1,42 +1,70 @@
 package co.za.aviationservice.service;
 
-
-import co.za.aviationservice.client.AviationApiClient;
 import co.za.aviationservice.model.AirportInformation;
 import co.za.aviationservice.model.AirportResponse;
+import co.za.aviationservice.client.ProviderAClient;
+import co.za.aviationservice.client.ProviderBClient;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import io.github.resilience4j.retry.annotation.Retry;
+import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class AirportServiceImpl implements AirportService {
 
-    private final AviationApiClient aviationApiClient;
+    private final ProviderAClient providerA; //default provider (or can use AviationProviderFactory for runtime swap)
+    private final ProviderBClient providerB;
+
+    /**
+     * Improvements thar can be done are
+     *  ✔ Round-robin provider selector
+     *  ✔ Health-aware provider switching
+     *  ✔ Priority routing via config
+     * */
+
 
     @Override
-    @CircuitBreaker(name = "aviationApi", fallbackMethod = "getAirportFallback")
+    @CircuitBreaker(name = "aviationApi", fallbackMethod = "fallbackToProviderB")
     @Retry(name = "aviationApi")
+    @TimeLimiter(name = "aviationApi")
     @RateLimiter(name = "aviationApi")
-    public AirportResponse getAirportByIcao(String icaoCode) {
-        log.debug("Fetching airport data for ICAO: {}", icaoCode);
-        return aviationApiClient.getAirportByIcao(icaoCode);
+    public Mono<AirportResponse> getAirportByIcao(String icaoCode) {
+        log.info("Calling Provider A via Resilience4J for ICAO {}", icaoCode);
+        return providerA.getAirportByIcao(icaoCode);
     }
 
     /**
-     * Fallback method when circuit breaker is open or retries exhausted
+     * Resilience4j invoked fallback.
+     * Delegates to Provider B automatically.
      */
-    private AirportInformation getAirportFallback(String icaoCode, Exception ex) {
-        log.error("Fallback triggered for ICAO: {}. Error: {}", icaoCode, ex.getMessage());
+    private Mono<AirportResponse> fallbackToProviderB(String icaoCode, Throwable ex) {
+        log.warn("Provider A failed for {}, trying Provider B. Reason={}", icaoCode, ex.getMessage());
 
-        // Return cached data or default response
-        return AirportInformation.builder()
+        return providerB.getAirportByIcao(icaoCode)
+                .onErrorResume(error -> {
+                    log.error("Provider B also failed. Returning static fallback");
+                    return buildStaticFallbackResponse(icaoCode);
+                });
+    }
+
+    private Mono<AirportResponse> buildStaticFallbackResponse(String icaoCode) {
+        AirportInformation info = AirportInformation.builder()
                 .icaoIdent(icaoCode)
                 .facilityName("Service temporarily unavailable")
                 .build();
+
+        AirportResponse response = new AirportResponse();
+        response.put(icaoCode, List.of(info));
+
+        return Mono.just(response);
     }
 }
+
