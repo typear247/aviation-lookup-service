@@ -1,12 +1,24 @@
-# aviation-service
-Spring Boot microservice for retrieving aviation information from the Aviation API.
+# Aviation Lookup Service
+This is a Spring Boot microservice for retrieving aviation information from the Aviation API.
 (**Mainly** : retrieving airport information using ICAO codes from the Aviation API. as per assessment request)
 
-### Key focus areas
-✔ Scalability (layered design [], statelessness, load-ready) \
-✔ Resilience (retry, circuit breaker, fallback)\
-✔ Extensibility (loose provider coupling + interface)\
-✔ Observability (logging, metrics, error transparency)
+
+### Setup and run instructions
+✔ Go to frontend project folder: `cd aviation-lookup-service` \
+
+✔ Build the project: `./gradlew clean build` \
+
+✔ Run the application: `./gradlew spring-boot:run` \
+
+## Endpoints
+Below endpoints should be accessible.
+```
+Swagger UI		: http://localhost:8080/aviationlookupservice/swagger-ui.html
+OpenAPI JSON		: http://localhost:8080/aviationlookupservice/v3/api-docs
+Health endpoint		: http://localhost:8080/aviationlookupservice/actuator/health
+Prometheus metrics	: http://localhost:8080/aviationlookupservice/actuator/prometheus
+```
+![img.png](docs/swaggerexampe.png)
 
 
 ### Technology Stack:
@@ -62,13 +74,22 @@ Spring Boot microservice for retrieving aviation information from the Aviation A
 
 
 ## Unit/Integration test
-![img.png](img.png)
+![img.png](docs/img.png)
+
 
 ## Performance test (using JMeter)
+- **Jmeter file [/aviation-lookup-service/src/test/jmeter-tests/loadtest.jmx]**: import 'loadtest.jmx' file on jmeter
+![img.png](docs/jmetertest.png)
+
+
+## Logs monitoring
+- Logs will be found on directory : /opt/logs/aviation-lookup-service.log
+![img.png](docs/applogs.png)
 
 
 
-1. **Clone the repository**
+
+**Clone the repository**
 ```bash
 git clone https://github.com/typear247/aviation-service
 cd aviation-service

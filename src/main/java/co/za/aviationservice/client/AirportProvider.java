@@ -15,5 +15,8 @@ import reactor.core.publisher.Mono;
 
 
 public interface AirportProvider {
+
+    String providerName();
+
     Mono<AirportResponse> getAirportByIcao(String icaoCode);
 }

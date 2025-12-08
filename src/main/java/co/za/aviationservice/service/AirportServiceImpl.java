@@ -4,6 +4,7 @@ import co.za.aviationservice.model.AirportInformation;
 import co.za.aviationservice.model.AirportResponse;
 import co.za.aviationservice.client.ProviderAClient;
 import co.za.aviationservice.client.ProviderBClient;
+import co.za.aviationservice.utils.AviationProviderFactory;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import io.github.resilience4j.retry.annotation.Retry;
@@ -23,6 +24,8 @@ public class AirportServiceImpl implements AirportService {
     private final ProviderAClient providerA; //default provider (or can use AviationProviderFactory for runtime swap)
     private final ProviderBClient providerB;
 
+    private final AviationProviderFactory aviationProviderFactory;
+
     /**
      * Improvements thar can be done are
      *  ✔ Round-robin provider selector
@@ -38,7 +41,8 @@ public class AirportServiceImpl implements AirportService {
     @RateLimiter(name = "aviationApi")
     public Mono<AirportResponse> getAirportByIcao(String icaoCode) {
         log.info("Calling Provider A via Resilience4J for ICAO {}", icaoCode);
-        return providerA.getAirportByIcao(icaoCode);
+//        return providerA.getAirportByIcao(icaoCode);
+        return aviationProviderFactory.resolve().getAirportByIcao(icaoCode);
     }
 
     /**

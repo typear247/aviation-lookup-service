@@ -19,6 +19,11 @@ public class ProviderBClient implements AirportProvider {
     private final WebClient.Builder builder;
 
     @Override
+    public String providerName() {
+        return "providernameB";
+    }
+
+    @Override
     public Mono<AirportResponse> getAirportByIcao(String icaoCode) {
 
         WebClient webClient = builder.baseUrl("https://backup-aviation.com").build();

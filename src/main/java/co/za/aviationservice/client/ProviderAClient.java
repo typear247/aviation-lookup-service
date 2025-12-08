@@ -24,11 +24,15 @@ public class ProviderAClient implements AirportProvider {
     @Value("${aviation.api.base-url:https://aviationapi.com}")
     private String aviationApiBaseUrl;
 
+    @Override
+    public String providerName() {
+        return "providernameA"; // or "aviation-api"
+    }
+
     private final WebClient.Builder builder;
 
 
     @Override
-    @CircuitBreaker(name = "airportService", fallbackMethod = "fallbackGetAirport")
     public Mono<AirportResponse> getAirportByIcao(String icaoCode) {
         log.info("Calling Provider A - Aviation API");
 
@@ -42,10 +46,5 @@ public class ProviderAClient implements AirportProvider {
                 .bodyToMono(AirportResponse.class)
                 .onErrorMap(e -> new ProviderUnavailableException("Provider unavailable: " + e.getMessage()));
     }
-
-    private Mono<String> fallbackGetAirport(String icaoCode, Throwable throwable) {
-        return Mono.just("Fallback: airport data not available for " + icaoCode);
-    }
-
 
 }

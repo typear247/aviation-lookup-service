@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 public class WebClientConfig {
 
     @Value("${aviation.api.base-url:https://aviationapi.com}")
-    private String aviationApiBaseUrl;
+    private String defaultAviationApiBaseUrl;
 
     @Value("${aviation.api.connection-timeout:5000}")
     private int connectionTimeout;
@@ -31,58 +31,19 @@ public class WebClientConfig {
     @Value("${aviation.api.read-timeout:5000}")
     private int readTimeout;
 
-//    @Bean
-//    public WebClient webClient() {
-//        HttpClient httpClient = HttpClient.create()
-//                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, connectionTimeout)
-//                .responseTimeout(Duration.ofMillis(readTimeout))
-//                .doOnConnected(conn -> conn
-//                        .addHandlerLast(new ReadTimeoutHandler(readTimeout, TimeUnit.MILLISECONDS))
-//                        .addHandlerLast(new WriteTimeoutHandler(readTimeout, TimeUnit.MILLISECONDS)));
-//
-//        return WebClient.builder()
-//                .baseUrl(baseUrl)
-//                .clientConnector(new ReactorClientHttpConnector(httpClient))
-//                .build();
-//    }
-
-//
-//    @Bean
-//    public WebClient aviationWebClient() {
-//
-//        HttpClient httpClient = HttpClient.create()
-//                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, connectionTimeout)
-//                .responseTimeout(Duration.ofMillis(readTimeout))
-//                .doOnConnected(conn -> conn
-//                        .addHandlerLast(new ReadTimeoutHandler(5))
-//                        .addHandlerLast(new WriteTimeoutHandler(5)));
-//
-//        return WebClient.builder()
-//                .baseUrl(baseUrl)
-//                .clientConnector(new ReactorClientHttpConnector(httpClient))
-//                .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
-//                .build();
-//    }
-
-
-//    @Bean("providerAWebClient")
-//    public WebClient providerAClient(WebClient.Builder builder) {
-//        return builder
-//                .baseUrl(aviationApiBaseUrl)
-//                .build();
-//    }
-//
-//    @Bean("providerBWebClient")
-//    public WebClient providerBClient(WebClient.Builder builder) {
-//        return builder
-//                .baseUrl("https://backup-aviation.com")
-//                .build();
-//    }
-
-
     @Bean
-    public WebClient.Builder webClientBuilder() {
-        return WebClient.builder();
+    public WebClient webClient() {
+        HttpClient httpClient = HttpClient.create()
+                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, connectionTimeout)
+                .responseTimeout(Duration.ofMillis(readTimeout))
+                .doOnConnected(conn -> conn
+                        .addHandlerLast(new ReadTimeoutHandler(readTimeout, TimeUnit.MILLISECONDS))
+                        .addHandlerLast(new WriteTimeoutHandler(readTimeout, TimeUnit.MILLISECONDS)));
+
+        return WebClient.builder()
+                .baseUrl(defaultAviationApiBaseUrl)
+                .clientConnector(new ReactorClientHttpConnector(httpClient))
+                .build();
     }
 
 }
