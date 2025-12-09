@@ -4,6 +4,12 @@ This is a Spring Boot microservice for retrieving aviation information from the 
 
 
 ### Setup and run instructions
+
+**Clone the repository**
+```
+git clone https://github.com/typear247/aviation-lookup-service.git
+```
+
 ✔ Go to frontend project folder: `cd aviation-lookup-service` \
 
 ✔ Build the project: `./gradlew clean build` \
@@ -86,10 +92,4 @@ Prometheus metrics	: http://localhost:8080/aviationlookupservice/actuator/promet
 - Logs will be found on directory : /opt/logs/aviation-lookup-service.log
 ![img.png](docs/applogs.png)
 
-
-
-
-**Clone the repository**
-```bash
-git clone https://github.com/typear247/aviation-service
-cd aviation-service
+  
