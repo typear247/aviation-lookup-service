@@ -2,7 +2,6 @@ package co.za.aviationservice.service;
 
 
 import co.za.aviationservice.model.AirportResponse;
-import reactor.core.publisher.Mono;
 
 /**
  * Notes : SERVICE CONTRACT (Interface) / PROVIDER ABSTRACTION — decoupling API vendors
@@ -13,5 +12,5 @@ import reactor.core.publisher.Mono;
 
 
 public interface AirportService {
-    Mono<AirportResponse> getAirportByIcao(String icaoCode);
+    AirportResponse getAirportByIcao(String icaoCode);
 }

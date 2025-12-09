@@ -28,10 +28,10 @@ public class AirportServiceImpl implements AirportService {
 
     /**
      * Improvements thar can be done are
-     *  ✔ Round-robin provider selector
-     *  ✔ Health-aware provider switching
-     *  ✔ Priority routing via config
-     * */
+     * ✔ Round-robin provider selector
+     * ✔ Health-aware provider switching
+     * ✔ Priority routing via config
+     */
 
 
     @Override
@@ -39,9 +39,8 @@ public class AirportServiceImpl implements AirportService {
     @Retry(name = "aviationApi")
     @TimeLimiter(name = "aviationApi")
     @RateLimiter(name = "aviationApi")
-    public Mono<AirportResponse> getAirportByIcao(String icaoCode) {
+    public AirportResponse getAirportByIcao(String icaoCode) {
         log.info("Calling Provider A via Resilience4J for ICAO {}", icaoCode);
-//        return providerA.getAirportByIcao(icaoCode);
         return aviationProviderFactory.resolve().getAirportByIcao(icaoCode);
     }
 
@@ -50,13 +49,10 @@ public class AirportServiceImpl implements AirportService {
      * Delegates to Provider B automatically.
      */
     private Mono<AirportResponse> fallbackToProviderB(String icaoCode, Throwable ex) {
-        log.warn("Provider A failed for {}, trying Provider B. Reason={}", icaoCode, ex.getMessage());
+        log.info("Provider A failed for {}, trying Provider B. Reason={}", icaoCode, ex.getMessage());
 
-        return providerB.getAirportByIcao(icaoCode)
-                .onErrorResume(error -> {
-                    log.error("Provider B also failed. Returning static fallback");
-                    return buildStaticFallbackResponse(icaoCode);
-                });
+        // provider does its thing if fails
+        return buildStaticFallbackResponse(icaoCode);
     }
 
     private Mono<AirportResponse> buildStaticFallbackResponse(String icaoCode) {

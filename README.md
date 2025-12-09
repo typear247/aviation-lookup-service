@@ -8,7 +8,7 @@ This is a Spring Boot microservice for retrieving aviation information from the 
 
 ✔ Build the project: `./gradlew clean build` \
 
-✔ Run the application: `./gradlew spring-boot:run` \
+✔ Run the application: `./gradlew bootRun` \
 
 ## Endpoints
 Below endpoints should be accessible.
