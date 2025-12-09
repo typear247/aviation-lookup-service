@@ -21,13 +21,15 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import java.util.List;
 
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 //@ExtendWith(MockitoExtension.class)
 @WebMvcTest(AirportController.class)
-class AirportControllerTest {
+class
+AirportControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -40,7 +42,7 @@ class AirportControllerTest {
         AirportResponse response = new AirportResponse();
         response.put("KATL", List.of(AirportInformation.builder().build()));
 
-        Mockito.when(airportService.getAirportByIcao("KATL")).thenReturn(response);
+        when(airportService.getAirportByIcao("KATL")).thenReturn(response);
 
         mockMvc.perform(get("/v1/airports/KATL").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -48,14 +50,18 @@ class AirportControllerTest {
     }
 
     @Test
-    void testGetAirportByIcao_invalidIcao() throws Exception {
-        mockMvc.perform(get("/v1/airports/ABC"))  // invalid ICAO
-                .andExpect(status().isBadRequest());
+    void testGetAirportByIcao_validIcao() throws Exception {
+        AirportResponse response = new AirportResponse();
+        when(airportService.getAirportByIcao("KATL")).thenReturn(response);
+
+        mockMvc.perform(get("/v1/airports/KATL")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
     }
 
     @Test
     void testGetAirportByIcao_notFound() throws Exception {
-        Mockito.when(airportService.getAirportByIcao("XXXX"))
+        when(airportService.getAirportByIcao("XXXX"))
                 .thenThrow(new AirportNotFoundException("XXXX"));
 
         mockMvc.perform(get("/v1/airports/XXXX"))

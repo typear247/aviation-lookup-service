@@ -13,12 +13,12 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class OpenApiConfig {
 
-    @Bean
-    OpenAPI openAPI(){
-        return new OpenAPI()
-                .addServersItem(new Server().url("/aviationlookupservice/"))
-                .info(getInfo());
-    }
+//    @Bean
+//    OpenAPI openAPI(){
+//        return new OpenAPI()
+//                .addServersItem(new Server().url("/aviationlookupservice/"))
+//                .info(getInfo());
+//    }
 
     @Bean
     Info getInfo(){
@@ -34,6 +34,14 @@ public class OpenApiConfig {
         return GroupedOpenApi.builder()
                 .group("Health Controller")
                 .pathsToMatch("/health/**")
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi apiGroup() {
+        return GroupedOpenApi.builder()
+                .group("API Controller")
+                .pathsToMatch("/api/**")
                 .build();
     }
 

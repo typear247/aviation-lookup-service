@@ -5,7 +5,6 @@ import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,25 +24,28 @@ public class WebClientConfig {
     @Value("${aviation.api.base-url:https://aviationapi.com}")
     private String defaultAviationApiBaseUrl;
 
-    @Value("${aviation.api.connection-timeout:5000}")
-    private int connectionTimeout;
-
-    @Value("${aviation.api.read-timeout:5000}")
-    private int readTimeout;
+    @Value("${aviation.api.timeout:5000}")
+    private long timeout;
 
     @Bean
     public WebClient webClient() {
+
         HttpClient httpClient = HttpClient.create()
-                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, connectionTimeout)
-                .responseTimeout(Duration.ofMillis(readTimeout))
+                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, (int) timeout)
+                .responseTimeout(Duration.ofMillis(timeout))
                 .doOnConnected(conn -> conn
-                        .addHandlerLast(new ReadTimeoutHandler(readTimeout, TimeUnit.MILLISECONDS))
-                        .addHandlerLast(new WriteTimeoutHandler(readTimeout, TimeUnit.MILLISECONDS)));
+                        .addHandlerLast(new ReadTimeoutHandler(timeout, TimeUnit.MILLISECONDS))
+                        .addHandlerLast(new WriteTimeoutHandler(timeout, TimeUnit.MILLISECONDS)));
 
         return WebClient.builder()
                 .baseUrl(defaultAviationApiBaseUrl)
                 .clientConnector(new ReactorClientHttpConnector(httpClient))
+                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .build();
     }
 
+    @Bean
+    public WebClient.Builder webClientBuilder() {
+        return WebClient.builder();
+    }
 }

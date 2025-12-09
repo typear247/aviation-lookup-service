@@ -2,8 +2,6 @@ package co.za.aviationservice.client;
 
 
 import co.za.aviationservice.model.AirportResponse;
-import reactor.core.publisher.Mono;
-
 
 
 //Notes:Provider Abstraction (Extensible Design)
@@ -18,5 +16,5 @@ public interface AirportProvider {
 
     String providerName();
 
-    Mono<AirportResponse> getAirportByIcao(String icaoCode);
+    AirportResponse getAirportByIcao(String icaoCode);
 }

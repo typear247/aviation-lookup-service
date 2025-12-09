@@ -19,7 +19,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.constraints.Pattern;
-import reactor.core.publisher.Mono;
 
 @Slf4j
 @RestController
@@ -59,25 +58,16 @@ public class AirportController {
             @ApiResponse(responseCode = "500", description = "Unexpected server error or external API failure", content = @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json"))
     })
     @GetMapping("/{icaoCode}")
-    public Mono<ResponseEntity<AirportResponse>> getAirportByIcao(
+    public ResponseEntity<AirportResponse> getAirportByIcao(
             @Parameter(description = "4-letter ICAO airport code (uppercase letters only)", example = "KATL", required = true)
             @PathVariable
             @Pattern(regexp = "^[A-Z]{4}$", message = "ICAO code must be 4 uppercase letters") String icaoCode) {
         final long startTime = System.currentTimeMillis();
+        log.info("Received request for airport with ICAO code: {}", icaoCode);
+        AirportResponse response = airportService.getAirportByIcao(icaoCode);
+        log.info("Successfully retrieved airport details for : {} in {}ms", icaoCode, System.currentTimeMillis() - startTime);
 
-        long start = System.currentTimeMillis();
-        log.info("Received request for {}", icaoCode);
-
-        return airportService.getAirportByIcao(icaoCode)
-                .doOnSuccess(response -> log.info(
-                        "Successfully retrieved {} in {} ms",
-                        icaoCode, System.currentTimeMillis() - start
-                ))
-                .doOnError(e -> log.error(
-                        "Failed retrieving {} in {} ms: {}",
-                        icaoCode, System.currentTimeMillis() - start, e.getMessage()
-                ))
-                .map(ResponseEntity::ok);
+        return ResponseEntity.ok(response);
     }
 
 
